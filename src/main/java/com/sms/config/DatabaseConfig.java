@@ -6,9 +6,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
-@Configuration
 public class DatabaseConfig {
-    @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //        dataSource.setDriverClassName("com.mysql.jdbc.Driver");

@@ -18,9 +18,8 @@ public class ProjectSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()).and().
+        http.csrf().ignoringRequestMatchers("/saveMsg").and().
                 authorizeRequests().requestMatchers("/home").permitAll()
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers("/displayMessages").hasRole("ADMIN")
                 .requestMatchers("/holidays/**").permitAll()
                 .requestMatchers("/about").permitAll()
