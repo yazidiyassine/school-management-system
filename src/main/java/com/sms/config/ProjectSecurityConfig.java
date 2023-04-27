@@ -42,7 +42,7 @@ public class ProjectSecurityConfig {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin")
+                .withUser("Yassine")
                 .password("admin")
                 .roles("ADMIN").and()
                 .withUser("User").password("user").roles("User")
