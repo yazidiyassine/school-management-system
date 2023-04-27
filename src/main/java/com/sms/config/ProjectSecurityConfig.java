@@ -18,7 +18,7 @@ public class ProjectSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().ignoringRequestMatchers("/saveMsg").and().
+        http.csrf().ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers("/public").and().
                 authorizeRequests().requestMatchers("/home").permitAll()
                 .requestMatchers("/displayMessages").hasRole("ADMIN")
                 .requestMatchers("/holidays/**").permitAll()
@@ -26,6 +26,7 @@ public class ProjectSecurityConfig {
                 .requestMatchers("/saveMsg").permitAll().
                 requestMatchers("/contact").permitAll()
                 .requestMatchers("/login").permitAll()
+                .requestMatchers("/public/**").permitAll()
                 .requestMatchers("/dashboard").authenticated()
                 .requestMatchers("/courses").authenticated()
                 .and()

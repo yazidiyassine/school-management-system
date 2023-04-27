@@ -42,25 +42,27 @@ Author URL: http://w3layouts.com
         <div class="title-main text-center mx-auto mb-md-5 mb-4" style="max-width:500px;">
             <h3 class="title-style">LogIn</h3>
         </div>
-        <div class="row login-block justify-content-center align-items-center">
+        <div class="row login-block">
             <div class="col-md-6 login-center">
                 <form th:action="@{/login}" method="post" class="signin-form">
                     <div class="col-md-8 login-center input-grids">
-                        <li class="alert alert-danger" role="alert" th:if="${!#strings.isEmpty(errorMessge)}" th:text="${errorMessge}" />
-                        <input type="text" name="username" id="username" placeholder="Username" class="login-input" />
-                        <input type="password" name="password" id="password" placeholder="Password" class="login-input" />
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <li class="alert alert-success" role="alert" th:if="${!#strings.isEmpty(errorMessage)}"
+                            th:text="${errorMessage}" />
+                        <input type="text" name="username" id="username" placeholder="Username"
+                               class="login-input" />
+                        <input type="password" name="password" id="password" placeholder="Password"
+                               class="login-input" />
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     </div>
                     <div class="col-md-8 login-center text-start">
                         <button class="btn btn-style btn-style-3 text-left">Log In</button>
-                        <a class="new-user text-right" href="">New User ?</a>
+                        <a th:href="@{/public/register}" class="new-user text-right">New User ?</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </section>
-
 <!-- //login block -->
 
 <!-- footer block -->
