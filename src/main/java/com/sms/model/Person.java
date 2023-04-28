@@ -25,6 +25,7 @@ import jakarta.validation.constraints.Size;
                 message = "Email addresses do not match!"
         )
 })
+@Table(name = "person")
 public class Person extends BaseEntity{
 
     @Id
@@ -59,7 +60,7 @@ public class Person extends BaseEntity{
     private String confirmPwd;
 
     @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST, targetEntity = Roles.class)
-    @JoinColumn(name = "role_id", referencedColumnName = "roleId",nullable = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id",nullable = false)
     private Roles roles;
 
     @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL, targetEntity = Address.class)
