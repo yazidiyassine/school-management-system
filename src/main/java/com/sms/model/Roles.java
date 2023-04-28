@@ -1,9 +1,9 @@
 package com.sms.model;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Data
 @Entity

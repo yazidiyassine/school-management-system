@@ -39,7 +39,7 @@ public class ProjectSecurityConfig {
                  http.headers().frameOptions().disable();
         return http.build();
     }
-
+/*
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
@@ -48,6 +48,6 @@ public class ProjectSecurityConfig {
                 .roles("ADMIN").and()
                 .withUser("User").password("user").roles("User")
                 .and().passwordEncoder(NoOpPasswordEncoder.getInstance());
-    }
+    }*/
 
 }
