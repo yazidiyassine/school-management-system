@@ -3,7 +3,6 @@ package com.sms.security;
 import com.sms.model.Person;
 import com.sms.model.Roles;
 import com.sms.repository.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,17 +10,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Component
 public class SMSUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public SMSUsernamePwdAuthenticationProvider(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+        this.personRepository = personRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -29,9 +35,9 @@ public class SMSUsernamePwdAuthenticationProvider implements AuthenticationProvi
         String pwd = authentication.getCredentials().toString();
 
         Person person = personRepository.readByEmail(email);
-        if (null != person && person.getPersonId()>0 && pwd.equals(person.getPwd())){
+        if (null != person && person.getPersonId()>0 &&  passwordEncoder.matches(pwd, person.getPwd())){
             return new UsernamePasswordAuthenticationToken(
-                    person.getName(), pwd, getGrantedAuthorities(person.getRoles()));
+                    person.getName(), null, getGrantedAuthorities(person.getRoles()));
         }else {
             throw new BadCredentialsException("Invalid credentials");
         }

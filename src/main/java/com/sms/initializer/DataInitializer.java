@@ -29,31 +29,35 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Check if roles are already present in the database
-        if (rolesRepository.count() == 0) {
+        // Check if ADMIN role is already present in the database
+        Roles adminRole = rolesRepository.getByRoleName("ADMIN");
+        // Check if ADMIN user is already present in the database
+        Person adminUser = personRepository.readByEmail(env.getProperty("admin.email"));
+
+        if (adminRole == null && adminUser == null) {
             // Create ADMIN role
-            Roles adminRole = new Roles();
+            adminRole = new Roles();
             adminRole.setRoleName(env.getProperty("admin.roleName"));
             adminRole.setCreatedAt(LocalDateTime.now());
             adminRole.setCreatedBy("DBA");
-
-            if (personRepository.count() == 0) {
-                // Create ADMIN user
-                Person admin = new Person();
-                admin.setName(env.getProperty("admin.name"));
-                admin.setEmail(env.getProperty("admin.email"));
-                admin.setConfirmEmail(env.getProperty("admin.email"));
-                admin.setMobileNumber(env.getProperty("admin.mobileNumber"));
-                admin.setPwd(env.getProperty("admin.password"));
-                admin.setConfirmPwd(env.getProperty("admin.password"));
-                admin.setRoles(adminRole);
-                admin.setCreatedAt(LocalDateTime.now());
-                admin.setCreatedBy("DBA");
-                personRepository.save(admin);
-            }
+            adminUser = new Person();
+            adminUser.setName(env.getProperty("admin.name"));
+            adminUser.setEmail(env.getProperty("admin.email"));
+            adminUser.setConfirmEmail(env.getProperty("admin.email"));
+            adminUser.setMobileNumber(env.getProperty("admin.mobileNumber"));
+            adminUser.setPwd(env.getProperty("admin.password"));
+            adminUser.setConfirmPwd(env.getProperty("admin.password"));
+            adminUser.setRoles(adminRole);
+            adminUser.setCreatedAt(LocalDateTime.now());
+            adminUser.setCreatedBy("DBA");
+            personRepository.save(adminUser);
             rolesRepository.save(adminRole);
-            // Create STUDENT role
-            Roles studentRole = new Roles();
+        }
+
+        // Create STUDENT role if it does not exist
+        Roles studentRole = rolesRepository.getByRoleName("STUDENT");
+        if (studentRole == null) {
+            studentRole = new Roles();
             studentRole.setRoleName("STUDENT");
             studentRole.setCreatedAt(LocalDateTime.now());
             studentRole.setCreatedBy("DBA");
