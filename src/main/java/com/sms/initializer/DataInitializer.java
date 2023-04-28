@@ -7,6 +7,7 @@ import com.sms.repository.RolesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,11 +21,13 @@ public class DataInitializer implements CommandLineRunner {
 
     private final Environment env;
 
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public DataInitializer(PersonRepository personRepository, RolesRepository rolesRepository, Environment env) {
+    public DataInitializer(PersonRepository personRepository, RolesRepository rolesRepository, Environment env, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.rolesRepository = rolesRepository;
         this.env = env;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -45,8 +48,10 @@ public class DataInitializer implements CommandLineRunner {
             adminUser.setEmail(env.getProperty("admin.email"));
             adminUser.setConfirmEmail(env.getProperty("admin.email"));
             adminUser.setMobileNumber(env.getProperty("admin.mobileNumber"));
-            adminUser.setPwd(env.getProperty("admin.password"));
-            adminUser.setConfirmPwd(env.getProperty("admin.password"));
+
+            adminUser.setPwd(passwordEncoder.encode(env.getProperty("admin.password")));
+            adminUser.setConfirmPwd(passwordEncoder.encode(env.getProperty("admin.password")));
+
             adminUser.setRoles(adminRole);
             adminUser.setCreatedAt(LocalDateTime.now());
             adminUser.setCreatedBy("DBA");
