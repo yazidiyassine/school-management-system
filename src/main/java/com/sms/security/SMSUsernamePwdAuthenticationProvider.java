@@ -37,7 +37,7 @@ public class SMSUsernamePwdAuthenticationProvider implements AuthenticationProvi
         Person person = personRepository.readByEmail(email);
         if (null != person && person.getPersonId()>0 &&  passwordEncoder.matches(pwd, person.getPwd())){
             return new UsernamePasswordAuthenticationToken(
-                    person.getName(), null, getGrantedAuthorities(person.getRoles()));
+                   email, null, getGrantedAuthorities(person.getRoles()));
         }else {
             throw new BadCredentialsException("Invalid credentials");
         }
