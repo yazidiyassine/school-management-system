@@ -1,7 +1,9 @@
 package com.sms.controller;
 
+import com.sms.model.Courses;
 import com.sms.model.EazyClass;
 import com.sms.model.Person;
+import com.sms.repository.CoursesRepository;
 import com.sms.repository.EazyClassRepository;
 import com.sms.repository.PersonRepository;
 import jakarta.servlet.http.HttpSession;
@@ -21,11 +23,19 @@ import java.util.Optional;
 @RequestMapping("admin")
 public class AdminController {
 
-    @Autowired
+    private final
     EazyClassRepository eazyClassRepository;
 
-    @Autowired
+    private final
     PersonRepository personRepository;
+
+    private final CoursesRepository coursesRepository;
+
+    public AdminController(EazyClassRepository eazyClassRepository, PersonRepository personRepository,CoursesRepository coursesRepository) {
+        this.eazyClassRepository = eazyClassRepository;
+        this.personRepository = personRepository;
+        this.coursesRepository = coursesRepository;
+    }
 
     @RequestMapping("/displayClasses")
     public ModelAndView displayClasses(Model model) {
@@ -100,4 +110,69 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("redirect:/admin/displayStudents>classId="+eazyClass.getClassId());
         return modelAndView;
     }
+
+    @GetMapping("/displayCourses")
+    public ModelAndView displayCourses(Model model){
+        List<Courses> courses = coursesRepository.findAll();
+        ModelAndView modelAndView = new ModelAndView("courses_secure.html");
+        modelAndView.addObject("courses",courses);
+        modelAndView.addObject("course", new Courses());
+        return modelAndView;
+    }
+
+    @PostMapping("/addNewCourse")
+    public ModelAndView addNewCourse(Model model, @ModelAttribute("course") Courses course){
+        ModelAndView modelAndView = new ModelAndView();
+        coursesRepository.save(course);
+        modelAndView.setViewName("redirect:/admin/displayCourses");
+        return modelAndView;
+    }
+
+    @GetMapping("/viewStudents")
+    public ModelAndView viewStudents(Model model,@RequestParam int id, HttpSession session){
+        ModelAndView modelAndView = new ModelAndView("course_students.html");
+        Optional<Courses> courses =  coursesRepository.findById(id);
+        modelAndView.addObject("courses", courses.get());
+        modelAndView.addObject("person", new Person());
+        session.setAttribute("courses", courses);
+        return modelAndView;
+    }
+
+    @RequestMapping("/deleteCourse")
+    public ModelAndView deleteCourse(Model model, @RequestParam int id) {
+        Optional<Courses> courses = coursesRepository.findById(id);
+        for (Person person : courses.get().getPersons()) {
+            person.setCourses(null);
+            personRepository.save(person);
+        }
+        coursesRepository.deleteById(id);
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin/displayCourses");
+        return modelAndView;
+    }
+    @PostMapping("/addStudentToCourse")
+    public ModelAndView addStudentToCourse(Model model, @ModelAttribute("person") Person person,
+                                           HttpSession session,  @RequestParam( required = false)String error) {
+        ModelAndView modelAndView = new ModelAndView();
+        Optional<Courses> optionalCourses = (Optional<Courses>) session.getAttribute("courses");
+        Courses courses = optionalCourses.get();
+
+        Person personEntity = personRepository.readByEmail(person.getEmail());
+        if(personEntity==null || !(personEntity.getPersonId()>0)){
+            modelAndView.setViewName("redirect:/admin/viewStudents?id="+courses.getCourseId()
+                    +"&error=true");
+            return modelAndView;
+        }
+        personEntity.getCourses().add(courses);
+        courses.getPersons().add(personEntity);
+        personRepository.save(personEntity);
+        session.setAttribute("courses",courses);
+        modelAndView.setViewName("redirect:/admin/viewStudents?id="+courses.getCourseId());
+        String errorMessage = null;
+        if (error != null){
+            errorMessage = "Invalid Email Entered!";
+            modelAndView.addObject("errorMessage", errorMessage);
+        }
+        return modelAndView;
+    }
 }
+
