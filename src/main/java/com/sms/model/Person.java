@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -53,16 +54,19 @@ public class Person extends BaseEntity{
     @NotBlank(message="Confirm Email must not be blank")
     @Email(message = "Please provide a valid confirm email address" )
     @Transient
+    @JsonIgnore
     private String confirmEmail;
 
     @NotBlank(message="Password must not be blank")
     @Size(min=5, message="Password must be at least 5 characters long")
     @PasswordValidator
+    @JsonIgnore
     private String pwd;
 
     @NotBlank(message="Confirm Password must not be blank")
     @Size(min=5, message="Confirm Password must be at least 5 characters long")
     @Transient
+    @JsonIgnore
     private String confirmPwd;
 
     @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST, targetEntity = Roles.class)

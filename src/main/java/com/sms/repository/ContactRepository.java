@@ -25,7 +25,7 @@ public interface ContactRepository extends CrudRepository<Contact, Integer> {
 
 //    @Query("SELECT c FROM Contact c WHERE c.status = :status")
     @Query(value = "SELECT * FROM contact_msg c WHERE c.status = :status", nativeQuery = true)
-    Page<Contact> findByStatus(String status, Pageable pageable);
+    Page<Contact> findByStatusWithQuery(String status, Pageable pageable);
 
    /*
     @Query(value = "SELECT * FROM contact_msg WHERE c.status = :status", nativeQuery = true)
