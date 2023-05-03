@@ -17,15 +17,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class ProjectSecurityConfig {
-
+//
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers("/api/**")
-                .ignoringRequestMatchers("/data-api/**").
+                .ignoringRequestMatchers("/data-api/**")
+                 .ignoringRequestMatchers("/sms/actuator/**").
                 ignoringRequestMatchers("/public").and().
                 authorizeRequests().requestMatchers("/home").permitAll()
                 .requestMatchers("/displayMessages").hasRole("ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/data-api/**").hasRole("ADMIN")
                 .requestMatchers("/student/**").hasRole("STUDENT")
                 .requestMatchers("/holidays/**").permitAll()
                 .requestMatchers("/about").permitAll()
