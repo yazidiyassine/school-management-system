@@ -1,19 +1,17 @@
 package com.sms.service;
 
 
-import com.sms.constants.EazySchoolConstants;
+import com.sms.config.SMSProps;
+import com.sms.constants.SMSConstants;
 import com.sms.model.Contact;
 import com.sms.repository.ContactRepository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /*
 @Slf4j, is a Lombok-provided annotation that will automatically generate an SLF4J
@@ -23,8 +21,13 @@ Logger static property in the class at compilation time.
 @Service
 public class ContactService {
 
-    @Autowired
-    private ContactRepository contactRepository;
+    private final ContactRepository contactRepository;
+    private final SMSProps smsProps;
+    public ContactService(ContactRepository contactRepository, SMSProps smsProps) {
+        this.contactRepository = contactRepository;
+        this.smsProps = smsProps;
+    }
+
 
     /**
      * Save Contact Details into DB
@@ -33,7 +36,7 @@ public class ContactService {
      */
     public boolean saveMessageDetails(Contact contact){
         boolean isSaved = false;
-        contact.setStatus(EazySchoolConstants.OPEN);
+        contact.setStatus(SMSConstants.OPEN);
         Contact savedContact = contactRepository.save(contact);
         if(null != savedContact && savedContact.getContactId()>0) {
             isSaved = true;
@@ -42,12 +45,12 @@ public class ContactService {
     }
 
     public Page<Contact> findMsgsWithOpenStatus(int pageNum,String sortField, String sortDir){
-        int pageSize = 5;
+        int pageSize = smsProps.getPageSize();
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize,
                 sortDir.equals("asc") ? Sort.by(sortField).ascending()
                         : Sort.by(sortField).descending());
         return contactRepository.findByStatusWithQuery(
-                EazySchoolConstants.OPEN,pageable);
+                SMSConstants.OPEN,pageable);
     }
 
     public boolean updateMsgStatus(int contactId){
@@ -58,7 +61,7 @@ public class ContactService {
         });
         Contact updatedContact = contactRepository.save(contact.get());
         */
-        int rows = contactRepository.updateMsgStatus(EazySchoolConstants.CLOSE, contactId);
+        int rows = contactRepository.updateMsgStatus(SMSConstants.CLOSE, contactId);
         if(rows > 0) {
             isUpdated = true;
         }

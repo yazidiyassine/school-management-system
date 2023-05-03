@@ -18,14 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@Profile("prod")
-public class SMSUsernamePwdAuthenticationProvider implements AuthenticationProvider {
+@Profile("!prod")
+public class DevSMSUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
     private final PersonRepository personRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public SMSUsernamePwdAuthenticationProvider(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
+    public DevSMSUsernamePwdAuthenticationProvider(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -36,8 +36,7 @@ public class SMSUsernamePwdAuthenticationProvider implements AuthenticationProvi
         String email = authentication.getName();
         String pwd = authentication.getCredentials().toString();
         Person person = personRepository.readByEmail(email);
-        if(null != person && person.getPersonId()>0 &&
-                passwordEncoder.matches(pwd,person.getPwd())){
+        if(null != person && person.getPersonId()>0){
             return new UsernamePasswordAuthenticationToken(
                     email, null, getGrantedAuthorities(person.getRoles()));
         }else{

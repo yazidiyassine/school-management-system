@@ -4,6 +4,8 @@ import com.sms.model.Person;
 import com.sms.repository.PersonRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +17,18 @@ public class DashboardController {
 
     private final PersonRepository personRepository;
 
-    public DashboardController(PersonRepository personRepository) {
+    private final Environment environment;
+
+    public DashboardController(PersonRepository personRepository, Environment environment) {
         this.personRepository = personRepository;
+        this.environment = environment;
     }
+
+    @Value("${sms.pageSize}")
+    private int defaultPageSize;
+
+    @Value("${sms.successMsg}")
+    private String successMsg;
 
 
     @RequestMapping("/dashboard")
@@ -39,5 +50,12 @@ public class DashboardController {
         log.info("Info message from the Dashboard page");
         log.debug("Debug message from the Dashboard page");
         log.trace("Trace message from the Dashboard page");
+
+        log.info("defaultPageSize value with @Value is : "+defaultPageSize);
+        log.info("successMsg value with @Value is : "+successMsg);
+
+        log.info("defaultPageSize value with Environment is : "+environment.getProperty("sms.pageSize"));
+        log.info("successMsg value with Environment is : "+environment.getProperty("sms.contact.successMsg"));
+        log.info("successMsg value with Environment is : "+environment.getProperty("JAVA_HOME"));
     }
 }

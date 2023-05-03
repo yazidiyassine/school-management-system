@@ -1,11 +1,10 @@
 package com.sms.service;
 
-import com.sms.constants.EazySchoolConstants;
+import com.sms.constants.SMSConstants;
 import com.sms.model.Person;
 import com.sms.model.Roles;
 import com.sms.repository.PersonRepository;
 import com.sms.repository.RolesRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,7 @@ public class PersonService {
 
     public boolean createNewPerson(Person person){
         boolean isSaved = false;
-        Roles role = rolesRepository.getByRoleName(EazySchoolConstants.STUDENT_ROLE);
+        Roles role = rolesRepository.getByRoleName(SMSConstants.STUDENT_ROLE);
         person.setRoles(role);
         person.setPwd(passwordEncoder.encode(person.getPwd()));
         person = personRepository.save(person);

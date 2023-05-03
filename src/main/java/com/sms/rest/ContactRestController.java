@@ -1,6 +1,6 @@
 package com.sms.rest;
 
-import com.sms.constants.EazySchoolConstants;
+import com.sms.constants.SMSConstants;
 import com.sms.model.Contact;
 import com.sms.model.Response;
 import com.sms.repository.ContactRepository;
@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,7 +82,7 @@ public class ContactRestController {
         Response response = new Response();
         Optional<Contact> contact = contactRepository.findById(contactReq.getContactId());
         if(contact.isPresent()){
-            contact.get().setStatus(EazySchoolConstants.CLOSE);
+            contact.get().setStatus(SMSConstants.CLOSE);
             contactRepository.save(contact.get());
         }else{
             response.setStatusCode("400");
